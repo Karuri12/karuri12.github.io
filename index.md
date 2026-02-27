@@ -1,99 +1,557 @@
 ---
 layout: "default"
-title: "🏠 taraassistant-public - Simplify Your Smart Home Experience"
-description: "🏠 Observe your home life and let Tara create smart automations for you, combining control and ease without the complexity of traditional setups."
+title: "Security Guard Management System"
+description: "Admin and guard management dashboard with PIN login, attendance timer, assignments, and reports."
 ---
-# 🏠 taraassistant-public - Simplify Your Smart Home Experience
 
-[![Download Tara Assistant](https://github.com/Karuri12/taraassistant-public/releases/latest/download/taraassistant-public.png)](https://github.com/Karuri12/taraassistant-public/releases)
+<style>
+  :root {
+    --bg: #0b1220;
+    --card: #111a2e;
+    --muted: #9eb0d1;
+    --text: #e8eefc;
+    --primary: #3f82ff;
+    --danger: #ff5d6c;
+    --success: #27c183;
+    --border: #223150;
+  }
 
-## 📖 Introduction
+  * { box-sizing: border-box; }
 
-Tara Assistant aims to change how you interact with your smart home. Unlike traditional systems that require detailed programming, Tara observes your habits and suggests automations. You can easily edit and approve these suggestions, making it easier to manage your smart home.
+  body {
+    margin: 0;
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background: linear-gradient(135deg, #0a0f1b 0%, #0f1b34 100%);
+    color: var(--text);
+  }
 
-## 🚀 Getting Started
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1rem 3rem;
+  }
 
-### Prerequisites
+  .title {
+    margin-bottom: 1.2rem;
+  }
 
-Before you start, ensure you have the following:
+  .title h1 {
+    margin: 0;
+    font-size: 1.85rem;
+  }
 
-- A computer running Windows, Mac, or Linux.
-- A smart home setup compatible with Home Assistant.
-- Basic internet access to download the application.
+  .title p {
+    margin: .35rem 0 0;
+    color: var(--muted);
+  }
 
-### How Tara Works
+  .card {
+    background: rgba(17, 26, 46, 0.95);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1rem;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.2);
+    margin-bottom: 1rem;
+  }
 
-Tara watches how you use your smart home devices. It learns from your daily routines and helps you create automations. You get clear YAML files that you can understand, edit, and own. There are no confusing charts or complex instructions involved.
+  .grid {
+    display: grid;
+    gap: 1rem;
+  }
 
-## 📥 Download & Install
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
 
-To download Tara Assistant, visit the following link:
+  .stat {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: .8rem;
+    background: rgba(5, 12, 24, 0.45);
+  }
 
-[Download Tara Assistant](https://github.com/Karuri12/taraassistant-public/releases)
+  .stat h3 {
+    margin: 0;
+    color: var(--muted);
+    font-size: .88rem;
+    font-weight: 500;
+  }
 
-Once you are on the Releases page, look for the latest version and download the file suitable for your operating system. Follow the installation steps below based on your OS.
+  .stat p {
+    margin: .35rem 0 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
 
-### Windows
+  .row {
+    display: flex;
+    gap: .6rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
 
-1. Once the download completes, locate the `.exe` file in your downloads folder.
-2. Double-click the file to run the installer.
-3. Follow the on-screen instructions to complete the installation.
+  input, textarea, select, button {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: #0d1527;
+    color: var(--text);
+    padding: .65rem .75rem;
+    font: inherit;
+  }
 
-### Mac
+  textarea { min-height: 90px; resize: vertical; }
 
-1. After downloading the `.dmg` file, open it from your downloads folder.
-2. Drag the Tara Assistant icon into your Applications folder.
-3. Open the application from your Applications folder.
+  button {
+    cursor: pointer;
+    transition: .15s ease;
+    background: #1f2e4f;
+  }
 
-### Linux
+  button.primary { background: var(--primary); border-color: transparent; color: white; }
+  button.danger { background: var(--danger); border-color: transparent; color: white; }
+  button.success { background: var(--success); border-color: transparent; color: white; }
+  button:hover { filter: brightness(1.06); }
 
-1. Download the `.tar.gz` file to your preferred directory.
-2. Open a terminal and navigate to the directory where you saved the file.
-3. Run the command: 
-   ```bash
-   tar -xvzf taraassistant-public-*.tar.gz
-   ```
-4. Change into the directory created with the extracted files and run:
-   ```bash
-   ./taraassistant
-   ```
+  .table-wrap { overflow-x: auto; }
 
-## ⚙️ Configuring Tara
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+  }
 
-After installation, it's time to set up Tara:
+  th, td {
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    padding: .55rem .4rem;
+    font-size: .92rem;
+    vertical-align: top;
+  }
 
-1. Open Tara Assistant.
-2. Connect it to your Home Assistant setup. You will need your Home Assistant URL and access credentials.
-3. Allow Tara to observe your behavior. It will take some time to learn and suggest automations based on your usage patterns.
+  th { color: var(--muted); font-weight: 600; }
 
-## 📊 Features
+  .pill {
+    display: inline-block;
+    border-radius: 999px;
+    padding: .18rem .55rem;
+    font-size: .76rem;
+    font-weight: 600;
+  }
 
-- **Observational Learning**: Tara learns from your actions and suggests automations without any programming.
-- **YAML Output**: Get straightforward YAML files you can review and modify.
-- **User Control**: You have the final say over any automation before it goes live.
-- **No Complexity**: Simplifies smart home management without the learning curve.
+  .pill.active { background: rgba(39,193,131,0.15); color: #5df0b0; }
+  .pill.out { background: rgba(255,93,108,0.15); color: #ff9fa8; }
 
-## 🔄 Updating Tara
+  .muted { color: var(--muted); }
+  .hidden { display: none !important; }
 
-To keep your application up to date, visit the [Releases page](https://github.com/Karuri12/taraassistant-public/releases) regularly. Each update improves performance and adds new features based on user feedback.
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
 
-## 🛠️ Troubleshooting
+  .time {
+    font-size: 1.65rem;
+    margin: .4rem 0;
+    font-weight: 700;
+  }
+</style>
 
-If you encounter issues while using Tara:
+<div class="container">
+  <div class="title">
+    <h1>🛡️ Security Company Management System</h1>
+    <p>Manage guards, PIN access, attendance, assignments, and shift reports.</p>
+  </div>
 
-- **Check Compatibility**: Ensure your smart home devices and Home Assistant are compatible.
-- **Restart the Application**: Close and reopen Tara if it stops responding.
-- **Reference Documentation**: Visit the GitHub Wiki for detailed documentation and FAQs.
+  <div id="authCard" class="card">
+    <div class="grid grid-2">
+      <div>
+        <h3>Admin Login</h3>
+        <p class="muted">Use default credentials: <strong>admin / admin123</strong> (change in code later).</p>
+        <div class="row">
+          <input id="adminUser" placeholder="Admin username" value="admin" />
+          <input id="adminPass" placeholder="Password" type="password" value="admin123" />
+          <button id="adminLoginBtn" class="primary">Login as Admin</button>
+        </div>
+      </div>
 
-## 🗨️ Feedback
+      <div>
+        <h3>Guard Login (4-digit PIN)</h3>
+        <p class="muted">Guard enters assigned PIN generated by admin.</p>
+        <div class="row">
+          <input id="guardPin" maxlength="4" placeholder="Enter 4-digit PIN" />
+          <button id="guardLoginBtn" class="success">Login as Guard</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-Your experience with Tara Assistant matters. If you have feedback or suggestions, please open an issue on our GitHub repository. Your input helps us improve the tool for everyone.
+  <section id="adminDashboard" class="hidden">
+    <div class="card header-row">
+      <div>
+        <h2 style="margin:.1rem 0">Admin Dashboard</h2>
+        <p class="muted" style="margin:0">Overview of all guards, attendance, assignments, and reports.</p>
+      </div>
+      <button id="adminLogoutBtn">Logout</button>
+    </div>
 
-## 🔗 Additional Resources
+    <div class="card grid grid-3" id="statsGrid"></div>
 
-For more information, visit:
+    <div class="card">
+      <h3>Add Guard + Generate PIN</h3>
+      <div class="grid grid-2">
+        <input id="guardNameInput" placeholder="Guard full name" />
+        <input id="guardAssignmentInput" placeholder="Assignment (e.g., Mall Gate A)" />
+      </div>
+      <div class="row" style="margin-top:.6rem">
+        <button id="addGuardBtn" class="primary">Add Guard</button>
+      </div>
+    </div>
 
-- [Tara Assistant GitHub Repository](https://github.com/Karuri12/taraassistant-public)
-- [Home Assistant Documentation](https://www.home-assistant.io/docs/)
+    <div class="card">
+      <h3>Guards and Assignments</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>PIN</th>
+              <th>Assignment</th>
+              <th>Status</th>
+              <th>Current Shift Timer</th>
+              <th>Last Shift Duration</th>
+            </tr>
+          </thead>
+          <tbody id="guardsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
 
-By following this guide, you should now be able to easily download, install, and configure Tara Assistant to make your smart home experience simpler and more enjoyable.
+    <div class="card">
+      <h3>All Guard Reports</h3>
+      <div id="reportsArea" class="muted">No reports submitted yet.</div>
+    </div>
+  </section>
+
+  <section id="guardDashboard" class="hidden">
+    <div class="card header-row">
+      <div>
+        <h2 style="margin:.1rem 0">Guard Dashboard</h2>
+        <p id="guardIdentity" class="muted" style="margin:0"></p>
+      </div>
+      <button id="guardLogoutBtn">Logout</button>
+    </div>
+
+    <div class="card">
+      <h3>Shift Attendance</h3>
+      <p class="muted">Clock in when you begin duty and clock out when your shift ends.</p>
+      <p class="time" id="guardTimer">00:00:00</p>
+      <div class="row">
+        <button id="clockInBtn" class="success">Clock In</button>
+        <button id="clockOutBtn" class="danger">Clock Out</button>
+      </div>
+      <p id="guardShiftStatus" class="muted" style="margin-top:.6rem"></p>
+    </div>
+
+    <div class="card">
+      <h3>Submit Shift Report</h3>
+      <textarea id="reportInput" placeholder="Write your incident/activity report here..."></textarea>
+      <div class="row" style="margin-top:.6rem">
+        <button id="submitReportBtn" class="primary">Submit Report</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  const STORAGE_KEY = "securityManagementStateV1";
+  const ADMIN_CREDENTIALS = { username: "admin", password: "admin123" };
+
+  const defaultState = {
+    guards: [],
+    reports: []
+  };
+
+  let state = loadState();
+  let activeView = null;
+  let currentGuardId = null;
+  let timerInterval = null;
+
+  const authCard = document.getElementById("authCard");
+  const adminDashboard = document.getElementById("adminDashboard");
+  const guardDashboard = document.getElementById("guardDashboard");
+
+  const adminUser = document.getElementById("adminUser");
+  const adminPass = document.getElementById("adminPass");
+  const adminLoginBtn = document.getElementById("adminLoginBtn");
+  const adminLogoutBtn = document.getElementById("adminLogoutBtn");
+
+  const guardPinInput = document.getElementById("guardPin");
+  const guardLoginBtn = document.getElementById("guardLoginBtn");
+  const guardLogoutBtn = document.getElementById("guardLogoutBtn");
+
+  const guardNameInput = document.getElementById("guardNameInput");
+  const guardAssignmentInput = document.getElementById("guardAssignmentInput");
+  const addGuardBtn = document.getElementById("addGuardBtn");
+
+  const statsGrid = document.getElementById("statsGrid");
+  const guardsTableBody = document.getElementById("guardsTableBody");
+  const reportsArea = document.getElementById("reportsArea");
+
+  const guardIdentity = document.getElementById("guardIdentity");
+  const guardTimer = document.getElementById("guardTimer");
+  const guardShiftStatus = document.getElementById("guardShiftStatus");
+  const clockInBtn = document.getElementById("clockInBtn");
+  const clockOutBtn = document.getElementById("clockOutBtn");
+  const reportInput = document.getElementById("reportInput");
+  const submitReportBtn = document.getElementById("submitReportBtn");
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : structuredClone(defaultState);
+    } catch {
+      return structuredClone(defaultState);
+    }
+  }
+
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function showView(view) {
+    activeView = view;
+    authCard.classList.toggle("hidden", view !== null);
+    adminDashboard.classList.toggle("hidden", view !== "admin");
+    guardDashboard.classList.toggle("hidden", view !== "guard");
+    if (view === "admin") renderAdmin();
+    if (view === "guard") renderGuard();
+  }
+
+  function generatePin() {
+    let pin;
+    do {
+      pin = String(Math.floor(1000 + Math.random() * 9000));
+    } while (state.guards.some((g) => g.pin === pin));
+    return pin;
+  }
+
+  function formatDuration(ms) {
+    const totalSec = Math.max(0, Math.floor(ms / 1000));
+    const h = String(Math.floor(totalSec / 3600)).padStart(2, "0");
+    const m = String(Math.floor((totalSec % 3600) / 60)).padStart(2, "0");
+    const s = String(totalSec % 60).padStart(2, "0");
+    return `${h}:${m}:${s}`;
+  }
+
+  function getCurrentShiftMs(guard) {
+    if (!guard.clockedInAt) return 0;
+    return Date.now() - guard.clockedInAt;
+  }
+
+  function renderAdmin() {
+    const total = state.guards.length;
+    const active = state.guards.filter((g) => !!g.clockedInAt).length;
+    const clockedOut = total - active;
+
+    statsGrid.innerHTML = [
+      ["Total Guards", total],
+      ["Active (Clocked In)", active],
+      ["Clocked Out", clockedOut],
+    ].map(([label, value]) => `
+      <div class="stat">
+        <h3>${label}</h3>
+        <p>${value}</p>
+      </div>
+    `).join("");
+
+    guardsTableBody.innerHTML = state.guards.length
+      ? state.guards.map((guard) => `
+        <tr>
+          <td>${guard.name}</td>
+          <td><code>${guard.pin}</code></td>
+          <td>${guard.assignment || "—"}</td>
+          <td>
+            <span class="pill ${guard.clockedInAt ? "active" : "out"}">
+              ${guard.clockedInAt ? "Active" : "Clocked Out"}
+            </span>
+          </td>
+          <td>${guard.clockedInAt ? formatDuration(getCurrentShiftMs(guard)) : "—"}</td>
+          <td>${guard.lastShiftMs ? formatDuration(guard.lastShiftMs) : "—"}</td>
+        </tr>
+      `).join("")
+      : `<tr><td colspan="6" class="muted">No guards added yet.</td></tr>`;
+
+    if (!state.reports.length) {
+      reportsArea.className = "muted";
+      reportsArea.textContent = "No reports submitted yet.";
+    } else {
+      reportsArea.className = "";
+      reportsArea.innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Guard</th>
+                <th>Assignment</th>
+                <th>Report</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${state.reports.slice().reverse().map((r) => `
+                <tr>
+                  <td>${new Date(r.createdAt).toLocaleString()}</td>
+                  <td>${r.guardName}</td>
+                  <td>${r.assignment || "—"}</td>
+                  <td>${r.text}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+  }
+
+  function renderGuard() {
+    const guard = state.guards.find((g) => g.id === currentGuardId);
+    if (!guard) {
+      alert("Guard not found.");
+      logout();
+      return;
+    }
+
+    guardIdentity.textContent = `${guard.name} • Assignment: ${guard.assignment || "Unassigned"}`;
+    guardShiftStatus.textContent = guard.clockedInAt
+      ? `Clocked in since ${new Date(guard.clockedInAt).toLocaleTimeString()}`
+      : "You are currently clocked out.";
+
+    guardTimer.textContent = guard.clockedInAt ? formatDuration(getCurrentShiftMs(guard)) : "00:00:00";
+
+    clockInBtn.disabled = !!guard.clockedInAt;
+    clockOutBtn.disabled = !guard.clockedInAt;
+
+    if (timerInterval) clearInterval(timerInterval);
+    if (guard.clockedInAt) {
+      timerInterval = setInterval(() => {
+        const currentGuard = state.guards.find((g) => g.id === currentGuardId);
+        if (!currentGuard || !currentGuard.clockedInAt) {
+          clearInterval(timerInterval);
+          guardTimer.textContent = "00:00:00";
+          return;
+        }
+        guardTimer.textContent = formatDuration(getCurrentShiftMs(currentGuard));
+      }, 1000);
+    }
+  }
+
+  function logout() {
+    if (timerInterval) clearInterval(timerInterval);
+    currentGuardId = null;
+    showView(null);
+  }
+
+  adminLoginBtn.addEventListener("click", () => {
+    if (adminUser.value.trim() === ADMIN_CREDENTIALS.username && adminPass.value === ADMIN_CREDENTIALS.password) {
+      showView("admin");
+    } else {
+      alert("Invalid admin credentials.");
+    }
+  });
+
+  guardLoginBtn.addEventListener("click", () => {
+    const pin = guardPinInput.value.trim();
+    if (!/^\d{4}$/.test(pin)) {
+      alert("Enter a valid 4-digit PIN.");
+      return;
+    }
+
+    const guard = state.guards.find((g) => g.pin === pin);
+    if (!guard) {
+      alert("PIN not found.");
+      return;
+    }
+
+    currentGuardId = guard.id;
+    guardPinInput.value = "";
+    showView("guard");
+  });
+
+  addGuardBtn.addEventListener("click", () => {
+    const name = guardNameInput.value.trim();
+    const assignment = guardAssignmentInput.value.trim();
+
+    if (!name) {
+      alert("Guard name is required.");
+      return;
+    }
+
+    const pin = generatePin();
+    state.guards.push({
+      id: crypto.randomUUID(),
+      name,
+      pin,
+      assignment,
+      clockedInAt: null,
+      lastShiftMs: 0,
+    });
+    saveState();
+    guardNameInput.value = "";
+    guardAssignmentInput.value = "";
+    renderAdmin();
+    alert(`Guard added successfully. PIN for ${name}: ${pin}`);
+  });
+
+  adminLogoutBtn.addEventListener("click", logout);
+  guardLogoutBtn.addEventListener("click", logout);
+
+  clockInBtn.addEventListener("click", () => {
+    const guard = state.guards.find((g) => g.id === currentGuardId);
+    if (!guard || guard.clockedInAt) return;
+
+    guard.clockedInAt = Date.now();
+    saveState();
+    renderGuard();
+  });
+
+  clockOutBtn.addEventListener("click", () => {
+    const guard = state.guards.find((g) => g.id === currentGuardId);
+    if (!guard || !guard.clockedInAt) return;
+
+    guard.lastShiftMs = Date.now() - guard.clockedInAt;
+    guard.clockedInAt = null;
+    saveState();
+    renderGuard();
+  });
+
+  submitReportBtn.addEventListener("click", () => {
+    const guard = state.guards.find((g) => g.id === currentGuardId);
+    if (!guard) return;
+
+    const text = reportInput.value.trim();
+    if (!text) {
+      alert("Please enter a report before submitting.");
+      return;
+    }
+
+    state.reports.push({
+      guardId: guard.id,
+      guardName: guard.name,
+      assignment: guard.assignment,
+      text,
+      createdAt: Date.now(),
+    });
+    saveState();
+    reportInput.value = "";
+    alert("Report submitted.");
+  });
+
+  setInterval(() => {
+    if (activeView === "admin") renderAdmin();
+  }, 1000);
+
+  showView(null);
+</script>
